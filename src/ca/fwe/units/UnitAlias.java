@@ -1,5 +1,11 @@
 package ca.fwe.units;
 
+/**
+ * Stores name and short form of a Unit.
+ * 
+ * @author Dewey Dunnington
+ *
+ */
 public class UnitAlias {
 
 	private String name ;
