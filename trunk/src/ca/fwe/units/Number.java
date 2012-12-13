@@ -84,13 +84,13 @@ public class Number {
 	 * Sets the unit associated with this Number. Must be of same dimensions as previous unit.
 	 * 
 	 * @param newUnit non-null unit to convert to.
-	 * @throws IncomparableUnitException if units are of different dimensions.
+	 * @throws UnitException if units are of different dimensions.
 	 */
-	public void setUnit(Unit newUnit) throws IncomparableUnitException {
+	public void setUnit(Unit newUnit) throws UnitException {
 		if(newUnit.getUnitType() == this.getUnit().getUnitType()) {
 			this.unit = newUnit ;
 		} else {
-			throw new IncomparableUnitException(this.unit, newUnit) ;
+			throw new UnitException(this.unit, newUnit) ;
 		}
 	}
 
@@ -142,13 +142,13 @@ public class Number {
 	/**
 	 * @param otherUnit
 	 * @return the value of this Number described in units of otherUnit
-	 * @throws IncomparableUnitException if units are of different dimensions
+	 * @throws UnitException if units are of different dimensions
 	 */
-	public double getValue(Unit otherUnit) throws IncomparableUnitException {
+	public double getValue(Unit otherUnit) throws UnitException {
 		if(otherUnit.getUnitType() == this.unit.getUnitType()) {
 			return this.getSIValue() / otherUnit.getConversionValue() ;
 		} else {
-			throw new IncomparableUnitException(this.unit, otherUnit) ;
+			throw new UnitException(this.unit, otherUnit) ;
 		}
 	}
 
@@ -200,13 +200,13 @@ public class Number {
 	 * 
 	 * @param otherNumber the number to add.
 	 * @return the sum of these two numbers, expressed in the Unit of this number.
-	 * @throws IncomparableUnitException if the units are in different dimensions.
+	 * @throws UnitException if the units are in different dimensions.
 	 */
-	public Number add(Number otherNumber) throws IncomparableUnitException {
+	public Number add(Number otherNumber) throws UnitException {
 		if(otherNumber.getUnit().getUnitType() == this.unit.getUnitType()) {
 			return new Number(this.getSIValue() + otherNumber.getSIValue(), this.getUnit(), true) ;
 		} else {
-			throw new IncomparableUnitException(this.unit, otherNumber.getUnit()) ;
+			throw new UnitException(this.unit, otherNumber.getUnit()) ;
 		}
 	}
 
@@ -215,14 +215,14 @@ public class Number {
 	 * 
 	 * @param otherNumber the number to subtract.
 	 * @return the difference between these two numbers, expressed in the Unit of this number.
-	 * @throws IncomparableUnitException if the units are in different dimensions.
+	 * @throws UnitException if the units are in different dimensions.
 	 */
 	
-	public Number subtract(Number otherNumber) throws IncomparableUnitException {
+	public Number subtract(Number otherNumber) throws UnitException {
 		if(otherNumber.getUnit().getUnitType() == this.unit.getUnitType()) {
 			return new Number(this.getSIValue() - otherNumber.getSIValue(), this.getUnit(), true) ;
 		} else {
-			throw new IncomparableUnitException(this.unit, otherNumber.getUnit()) ;
+			throw new UnitException(this.unit, otherNumber.getUnit()) ;
 		}
 	}
 

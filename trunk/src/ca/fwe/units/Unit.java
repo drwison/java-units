@@ -1,6 +1,10 @@
 package ca.fwe.units;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * A class representing a rational unit (i.e. ones that apply to values where 0 is meaningfully nothing, such as Kelvins, but not to
@@ -19,15 +23,15 @@ import java.util.ArrayList;
  * @author dewey
  *
  */
-public class Unit extends UnitAlias implements Cloneable {
+public class Unit extends UnitAlias {
 
 	private static final String UNIT_SEPARATOR = "-" ;
 	private static final String FRACTION_SEPARATOR = "/" ;
-	
+
 	private ArrayList<BaseUnit> numerator ;
 	private ArrayList<BaseUnit> denominator ;
 
-	
+
 	/**
 	 * Creates a new, empty unit, serving as a ratio and conversion value of 1.
 	 */
@@ -35,7 +39,7 @@ public class Unit extends UnitAlias implements Cloneable {
 		numerator = new ArrayList<BaseUnit>() ;
 		denominator = new ArrayList<BaseUnit>() ;
 	}
-	
+
 	/**
 	 * Creates a new unit based on an existing unit and a conversion value. Useful for creating multiple versions
 	 * of the same unit (e.g. ohms and milliohms).
@@ -78,7 +82,7 @@ public class Unit extends UnitAlias implements Cloneable {
 		this.simplify() ;
 	}
 
-	
+
 	//below used to define in Units
 	/**
 	 * Creates a new unit based on two arrays of BaseUnit objects. Used in the Units class to define units.
@@ -97,7 +101,7 @@ public class Unit extends UnitAlias implements Cloneable {
 		this.simplify() ;
 	}
 
-	
+
 	/**
 	 * Creates a new unit with a list of numerator units
 	 * 
@@ -106,25 +110,25 @@ public class Unit extends UnitAlias implements Cloneable {
 	public Unit(BaseUnit[] numeratorUnits) {
 		this(numeratorUnits, new BaseUnit[] {}) ;
 	}
-	
+
 	public Unit(String name, String shortName, BaseUnit unit) {
 		this(unit) ;
 		this.setName(name) ;
 		this.setShort(shortName) ;
 	}
-	
+
 	public Unit(String name, String shortName, BaseUnit[] numeratorUnits, BaseUnit[] denomUnits) {
 		this(numeratorUnits, denomUnits) ;
 		this.setName(name) ;
 		this.setShort(shortName) ;
 	}
-	
+
 	public Unit(String name, String shortName, BaseUnit[] numeratorUnits) {
 		this(numeratorUnits) ;
 		this.setName(name) ;
 		this.setShort(shortName) ;
 	}
-	
+
 	/**
 	 * Used to add name and abbreviation information to an existing Unit object. Useful for defining complicated units through
 	 * multiplication and division operations.
@@ -138,7 +142,7 @@ public class Unit extends UnitAlias implements Cloneable {
 		this.setName(name) ;
 		this.setShort(shortName) ;
 	}
-	
+
 	/**
 	 * @return A copy of the numerator units
 	 */
@@ -194,14 +198,14 @@ public class Unit extends UnitAlias implements Cloneable {
 		}
 		this.simplifyUnits() ;
 	}
-	
-	
+
+
 	/**
 	 *  Recursive element of simplify(). For all BaseUnits in the numerator, check to see if there is an identical BaseUnit in the denominator.
 	 *  if so, delete both, simplify again.
 	 */
 	private void simplifyUnits() {
-		
+
 		for(int i=0; i<numerator.size(); i++) {
 			if(denominator.contains(numerator.get(i))) {
 				denominator.remove(numerator.get(i)) ;
@@ -210,7 +214,7 @@ public class Unit extends UnitAlias implements Cloneable {
 			}
 		}
 	}
-	
+
 	/**
 	 * @return true if the Unit contains a dimensionless ratio, false if it does not.
 	 */
@@ -221,8 +225,8 @@ public class Unit extends UnitAlias implements Cloneable {
 			return true ;
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the dimensionless ratio associated with this unit.
 	 */
@@ -240,8 +244,8 @@ public class Unit extends UnitAlias implements Cloneable {
 		}
 		return ratioValue ;
 	}
-	
-	
+
+
 	/**
 	 * @return true if the unit contains a single ratio in the numerator that is not 1. false otherwise.
 	 */
@@ -252,14 +256,14 @@ public class Unit extends UnitAlias implements Cloneable {
 			return false ;
 		}
 	}
-	
+
 	/**
 	 * @return a unit identical to the current unit without any dimensionless ratios.
 	 */
 	public Unit stripRatios() {
 		ArrayList<BaseUnit> newNum = new ArrayList<BaseUnit>() ;
 		ArrayList<BaseUnit> newDen = new ArrayList<BaseUnit>() ;
-		
+
 		for(int i=0; i<numerator.size(); i++) {
 			if(numerator.get(i).getUnitType() != BaseUnit.RATIO.getUnitType()) {
 				newNum.add(numerator.get(i)) ;
@@ -272,7 +276,7 @@ public class Unit extends UnitAlias implements Cloneable {
 		}
 		return new Unit(newNum, newDen) ;
 	}
-	
+
 	/**
 	 * Strips any dimensionles ratios from the numerator and denominator. Used in simplify() in conjunction with getRatio() to
 	 * simplify any ratios into a single ratio in the numerator.
@@ -293,16 +297,16 @@ public class Unit extends UnitAlias implements Cloneable {
 		numerator = newNum ;
 		denominator = newDen ;
 	}
-	
+
 	public boolean equals(Object otherObject) {
 		if(otherObject instanceof Unit) {
 			Unit otherUnit = (Unit)otherObject ;
-		if(otherUnit.getConversionValue() == this.getConversionValue() &&
-				this.getUnitType() == otherUnit.getUnitType()) {
-			return true ;
-		} else {
-			return false ;
-		}
+			if(otherUnit.getConversionValue() == this.getConversionValue() &&
+					this.getUnitType() == otherUnit.getUnitType()) {
+				return true ;
+			} else {
+				return false ;
+			}
 		} else {
 			return false ;
 		}
@@ -323,7 +327,7 @@ public class Unit extends UnitAlias implements Cloneable {
 		}
 		return new Unit(newNum, newDen) ;
 	}
-	
+
 	/**
 	 * @return a unit with the denominator of this unit in the numerator, and the numerator of this unit in the denominator.
 	 */
@@ -375,7 +379,7 @@ public class Unit extends UnitAlias implements Cloneable {
 				newNumerator.addAll(newNumerator) ;
 				newDenominator.addAll(newDenominator) ;
 			}
-			
+
 			if(number > 0) {
 				return new Unit(newNumerator, newDenominator) ;
 			} else {
@@ -386,59 +390,122 @@ public class Unit extends UnitAlias implements Cloneable {
 		}
 	}
 
-	public Unit clone() {
-		return new Unit(this.getNumerator(), this.getDenominator()) ;
+
+
+	/**
+	 * Take the root-th root of this unit (e.g. m^2/s^2 becomes m/s when root=2). Will work best on SI units.
+	 * @param root the root to take of this Unit
+	 * @return the resulting unit
+	 * @throws UnitException if there is not an even multiple of each type of unit, even if there is an even multiple of each type of dimension.
+	 */
+	public Unit root(int root) throws UnitException {
+		if(this.isRatio()) {
+			return new Unit(new BaseUnit(Math.pow(getConversionValue(), 1.0/root))) ;
+		} else {
+			Map<BaseUnit, Integer> countsNum = new HashMap<BaseUnit, Integer>() ;
+			Map<BaseUnit, Integer> countsDen = new HashMap<BaseUnit, Integer>() ;
+
+			for(BaseUnit b: numerator) {
+				if(countsNum.containsKey(b)) {
+					int currentCount = countsNum.get(b) ;
+					countsNum.put(b, currentCount + 1) ;
+				} else {
+					countsNum.put(b, 1) ;
+				}
+			}
+
+			for(BaseUnit b: denominator) {
+				if(countsDen.containsKey(b)) {
+					int currentCount = countsNum.get(b) ;
+					countsNum.put(b, currentCount + 1) ;
+				} else {
+					countsNum.put(b, 1) ;
+				}
+			}
+
+			Iterator<Entry<BaseUnit, Integer>> numI = countsNum.entrySet().iterator() ;
+			Iterator<Entry<BaseUnit, Integer>> denI = countsDen.entrySet().iterator() ;
+
+			ArrayList<BaseUnit> newNumerator = new ArrayList<BaseUnit>() ;
+			ArrayList<BaseUnit> newDenominator = new ArrayList<BaseUnit>() ;
+
+			while(numI.hasNext()) {
+				Entry<BaseUnit, Integer> counts = numI.next() ;
+				double ratio = (double)counts.getValue() / (double)root ;
+				int intRatio = (int)Math.round(ratio) ;
+				if(ratio == intRatio) {
+					for(int i=0; i<intRatio; i++)
+						newNumerator.add(counts.getKey()) ;
+				} else {
+					throw new UnitException(this) ;
+				}
+			}
+
+			while(denI.hasNext()) {
+				Entry<BaseUnit, Integer> counts = denI.next() ;
+				double ratio = (double)counts.getValue() / (double)root ;
+				int intRatio = (int)Math.round(ratio) ;
+				if(ratio == intRatio) {
+					for(int i=0; i<intRatio; i++)
+						newDenominator.add(counts.getKey()) ;
+				} else {
+					throw new UnitException(this) ;
+				}
+			}
+
+			return new Unit(newNumerator, newDenominator) ;
+		}
 	}
 
 
 	public String getHtml() {
 		if(numerator.size() > 0 || denominator.size() > 0) {
-		ArrayList<BaseUnit> numUnits = new ArrayList<BaseUnit>() ;
-		ArrayList<Integer>numCounts = new ArrayList<Integer>() ;
+			ArrayList<BaseUnit> numUnits = new ArrayList<BaseUnit>() ;
+			ArrayList<Integer>numCounts = new ArrayList<Integer>() ;
 
-		for(int i=0; i<numerator.size(); i++) {
-			int index = numUnits.indexOf(numerator.get(i)) ;
-			if(index != -1) {
-				numCounts.set(index, numCounts.get(index) + 1) ;
-			} else {
-				numUnits.add(numerator.get(i)) ;
-				numCounts.add(1) ;
+			for(int i=0; i<numerator.size(); i++) {
+				int index = numUnits.indexOf(numerator.get(i)) ;
+				if(index != -1) {
+					numCounts.set(index, numCounts.get(index) + 1) ;
+				} else {
+					numUnits.add(numerator.get(i)) ;
+					numCounts.add(1) ;
+				}
 			}
-		}
 
-		ArrayList<BaseUnit> denUnits = new ArrayList<BaseUnit>() ;
-		ArrayList<Integer>denCounts = new ArrayList<Integer>() ;
+			ArrayList<BaseUnit> denUnits = new ArrayList<BaseUnit>() ;
+			ArrayList<Integer>denCounts = new ArrayList<Integer>() ;
 
-		for(int i=0; i<denominator.size(); i++) {
-			int index = denUnits.indexOf(denominator.get(i)) ;
-			if(index != -1) {
-				denCounts.set(index, denCounts.get(index) - 1) ;
-			} else {
-				denUnits.add(denominator.get(i)) ;
-				denCounts.add(-1) ;
+			for(int i=0; i<denominator.size(); i++) {
+				int index = denUnits.indexOf(denominator.get(i)) ;
+				if(index != -1) {
+					denCounts.set(index, denCounts.get(index) - 1) ;
+				} else {
+					denUnits.add(denominator.get(i)) ;
+					denCounts.add(-1) ;
+				}
 			}
-		}
 
-		String outString = "" ;
+			String outString = "" ;
 
-		for(int i=0; i<numUnits.size(); i++) {
-			String exponent ;
-			if(numCounts.get(i) == 1) {
-				exponent = " " ;
-				if(i == numUnits.size() - 1 && denUnits.size() == 0)
-					exponent = "" ;
-			} else {
-				exponent = supString(numCounts.get(i).toString()) ;
+			for(int i=0; i<numUnits.size(); i++) {
+				String exponent ;
+				if(numCounts.get(i) == 1) {
+					exponent = " " ;
+					if(i == numUnits.size() - 1 && denUnits.size() == 0)
+						exponent = "" ;
+				} else {
+					exponent = supString(numCounts.get(i).toString()) ;
+				}
+
+				outString += numUnits.get(i).getAbbreviation() + exponent ;
 			}
-			
-			outString += numUnits.get(i).getAbbreviation() + exponent ;
-		}
 
-		for(int i=0; i<denUnits.size(); i++) {
-			outString += denUnits.get(i).getAbbreviation() + supString(denCounts.get(i).toString()) ;
-		}
+			for(int i=0; i<denUnits.size(); i++) {
+				outString += denUnits.get(i).getAbbreviation() + supString(denCounts.get(i).toString()) ;
+			}
 
-		return outString ;
+			return outString ;
 		} else {
 			return null ;
 		}
@@ -493,7 +560,7 @@ public class Unit extends UnitAlias implements Cloneable {
 			ArrayList<BaseUnit> den = new ArrayList<BaseUnit>() ;
 
 			String[] partsNumerator = parts[0].trim().split(UNIT_SEPARATOR) ;
-			
+
 			for(int i=0; i<partsNumerator.length; i++) {
 				BaseUnit unit = getUnitFromArray(partsNumerator[i].trim(), listOfUnits) ;
 				if(unit != null) {
@@ -521,16 +588,16 @@ public class Unit extends UnitAlias implements Cloneable {
 			if(array[i].getAbbreviation().equals(abbreviation))
 				return array[i] ;
 		}
-		
+
 		try {
 			double ratioValue = new Double(abbreviation)  ;
 			return new BaseUnit(ratioValue) ;
 		} catch(NumberFormatException e) {
-			
+
 		}
 		return null ;
 	}
-	
+
 	/** 
 	 * @param unitType the unique prime number associated with the BaseUnit's dimension.
 	 * @return a BaseUnit of type unitType that is SI.
@@ -538,7 +605,7 @@ public class Unit extends UnitAlias implements Cloneable {
 	public static BaseUnit getSIUnit(int unitType) {
 		return getSIUnit(unitType, BaseUnit.ALL) ;
 	}
-	
+
 	private static BaseUnit getSIUnit(int unitType, BaseUnit[] array) {
 		for(int i=0; i<array.length; i++) {
 			if(array[i].getUnitType() == unitType)
