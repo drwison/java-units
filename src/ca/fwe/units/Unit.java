@@ -2,6 +2,23 @@ package ca.fwe.units;
 
 import java.util.ArrayList;
 
+/**
+ * A class representing a rational unit (i.e. ones that apply to values where 0 is meaningfully nothing, such as Kelvins, but not to
+ * ones where it is not, such as degrees Celcius. A Unit object is made up of a numerator and denominator of BaseUnit objects. Names
+ * and abbreviations are included as a convenience, and can be obtained from the Units library using the Units.getUnitAlias() method.
+ * Intended to be immutable and use independent backing ArrayLists.
+ * 
+ * @author Dewey Dunnington
+ *
+ */
+/**
+ * @author dewey
+ *
+ */
+/**
+ * @author dewey
+ *
+ */
 public class Unit extends UnitAlias implements Cloneable {
 
 	private static final String UNIT_SEPARATOR = "-" ;
@@ -10,11 +27,24 @@ public class Unit extends UnitAlias implements Cloneable {
 	private ArrayList<BaseUnit> numerator ;
 	private ArrayList<BaseUnit> denominator ;
 
+	
+	/**
+	 * Creates a new, empty unit, serving as a ratio and conversion value of 1.
+	 */
 	public Unit() {
 		numerator = new ArrayList<BaseUnit>() ;
 		denominator = new ArrayList<BaseUnit>() ;
 	}
 	
+	/**
+	 * Creates a new unit based on an existing unit and a conversion value. Useful for creating multiple versions
+	 * of the same unit (e.g. ohms and milliohms).
+	 * 
+	 * @param name
+	 * @param shortName
+	 * @param baseUnit original Unit
+	 * @param conversion conversion value for this unit (kilo = 1000, etc.)
+	 */
 	public Unit(String name, String shortName, Unit baseUnit, double conversion) {
 		this() ;
 		numerator.addAll(baseUnit.getNumerator()) ;
@@ -24,12 +54,23 @@ public class Unit extends UnitAlias implements Cloneable {
 		this.setShort(shortName) ;
 	}
 
+	/**
+	 * Creates a new unit with a single BaseUnit in the numerator.
+	 * 
+	 * @param unit
+	 */
 	public Unit(BaseUnit unit) {
 		this() ;
 		numerator.add(unit) ;
 		this.setName(unit.getName()) ;
 	}
 
+	/**
+	 * Creates a new unit based on two ArrayLists of units. The ArrayLists are copied, not modified.
+	 * 
+	 * @param numeratorUnits
+	 * @param denominatorUnits
+	 */
 	public Unit(ArrayList<BaseUnit> numeratorUnits, ArrayList<BaseUnit> denominatorUnits) {
 		this() ;
 		numerator.addAll(numeratorUnits) ;
@@ -39,6 +80,12 @@ public class Unit extends UnitAlias implements Cloneable {
 
 	
 	//below used to define in Units
+	/**
+	 * Creates a new unit based on two arrays of BaseUnit objects. Used in the Units class to define units.
+	 * 
+	 * @param numeratorUnits
+	 * @param denomUnits
+	 */
 	public Unit(BaseUnit[] numeratorUnits, BaseUnit[] denomUnits) {
 		this() ;
 		for(int i=0; i<numeratorUnits.length; i++) {
@@ -50,6 +97,12 @@ public class Unit extends UnitAlias implements Cloneable {
 		this.simplify() ;
 	}
 
+	
+	/**
+	 * Creates a new unit with a list of numerator units
+	 * 
+	 * @param numeratorUnits
+	 */
 	public Unit(BaseUnit[] numeratorUnits) {
 		this(numeratorUnits, new BaseUnit[] {}) ;
 	}
@@ -72,14 +125,37 @@ public class Unit extends UnitAlias implements Cloneable {
 		this.setShort(shortName) ;
 	}
 	
+	/**
+	 * Used to add name and abbreviation information to an existing Unit object. Useful for defining complicated units through
+	 * multiplication and division operations.
+	 * 
+	 * @param name
+	 * @param shortName
+	 * @param unit the existing unit to copy
+	 */
+	public Unit(String name, String shortName, Unit unit) {
+		this(unit.getNumerator(), unit.getDenominator()) ;
+		this.setName(name) ;
+		this.setShort(shortName) ;
+	}
+	
+	/**
+	 * @return A copy of the numerator units
+	 */
 	public ArrayList<BaseUnit> getNumerator() {
 		return new ArrayList<BaseUnit>(numerator) ;
 	}
 
+	/**
+	 * @return A copy of the denominator units
+	 */
 	public ArrayList<BaseUnit> getDenominator() {
 		return new ArrayList<BaseUnit>(denominator) ;
 	}
 
+	/**
+	 * @return the value needed to return a number in this unit to SI units
+	 */
 	public double getConversionValue() {
 		double value = 1 ;
 		for(int i=0; i<numerator.size(); i++) {
@@ -92,7 +168,10 @@ public class Unit extends UnitAlias implements Cloneable {
 		return value ;
 	}
 
-	public double getDerivedUnitType() {
+	/**
+	 * @return the double value unique to a unit with this combination of dimensions.
+	 */
+	public double getUnitType() {
 		double value = 1.0 ;
 		for(int i=0; i<numerator.size(); i++) {
 			value *= (double)numerator.get(i).getUnitType() ;
@@ -104,6 +183,9 @@ public class Unit extends UnitAlias implements Cloneable {
 		return value ;
 	}
 
+	/**
+	 * Called on any constructor with numerator and denominator units. Cancels units that are the same in numerator and denominator.
+	 */
 	private void simplify() {
 		double ratio = this.getRatio() ;
 		this.stripRatiosInSitu() ;
@@ -113,6 +195,11 @@ public class Unit extends UnitAlias implements Cloneable {
 		this.simplifyUnits() ;
 	}
 	
+	
+	/**
+	 *  Recursive element of simplify(). For all BaseUnits in the numerator, check to see if there is an identical BaseUnit in the denominator.
+	 *  if so, delete both, simplify again.
+	 */
 	private void simplifyUnits() {
 		
 		for(int i=0; i<numerator.size(); i++) {
@@ -124,6 +211,9 @@ public class Unit extends UnitAlias implements Cloneable {
 		}
 	}
 	
+	/**
+	 * @return true if the Unit contains a dimensionless ratio, false if it does not.
+	 */
 	public boolean containsRatio() {
 		if(this.stripRatios().equals(this)) {
 			return false ;
@@ -132,6 +222,10 @@ public class Unit extends UnitAlias implements Cloneable {
 		}
 	}
 	
+	
+	/**
+	 * @return the dimensionless ratio associated with this unit.
+	 */
 	public double getRatio() {
 		double ratioValue = 1 ;
 		for(int i=0; i<numerator.size(); i++) {
@@ -147,6 +241,10 @@ public class Unit extends UnitAlias implements Cloneable {
 		return ratioValue ;
 	}
 	
+	
+	/**
+	 * @return true if the unit contains a single ratio in the numerator that is not 1. false otherwise.
+	 */
 	public boolean isRatio() {
 		if(numerator.size() == 1 && numerator.get(0).getUnitType() == BaseUnit.RATIO.getUnitType()) {
 			return true ;
@@ -155,6 +253,9 @@ public class Unit extends UnitAlias implements Cloneable {
 		}
 	}
 	
+	/**
+	 * @return a unit identical to the current unit without any dimensionless ratios.
+	 */
 	public Unit stripRatios() {
 		ArrayList<BaseUnit> newNum = new ArrayList<BaseUnit>() ;
 		ArrayList<BaseUnit> newDen = new ArrayList<BaseUnit>() ;
@@ -172,6 +273,10 @@ public class Unit extends UnitAlias implements Cloneable {
 		return new Unit(newNum, newDen) ;
 	}
 	
+	/**
+	 * Strips any dimensionles ratios from the numerator and denominator. Used in simplify() in conjunction with getRatio() to
+	 * simplify any ratios into a single ratio in the numerator.
+	 */
 	private void stripRatiosInSitu() {
 		ArrayList<BaseUnit> newNum = new ArrayList<BaseUnit>() ;
 		ArrayList<BaseUnit> newDen = new ArrayList<BaseUnit>() ;
@@ -193,7 +298,7 @@ public class Unit extends UnitAlias implements Cloneable {
 		if(otherObject instanceof Unit) {
 			Unit otherUnit = (Unit)otherObject ;
 		if(otherUnit.getConversionValue() == this.getConversionValue() &&
-				this.getDerivedUnitType() == otherUnit.getDerivedUnitType()) {
+				this.getUnitType() == otherUnit.getUnitType()) {
 			return true ;
 		} else {
 			return false ;
@@ -204,6 +309,9 @@ public class Unit extends UnitAlias implements Cloneable {
 	}
 
 
+	/**
+	 * @return a unit of equivalent dimensions to the current unit, using only SI BaseUnits.
+	 */
 	public Unit getSI() {
 		ArrayList<BaseUnit> newNum = new ArrayList<BaseUnit>() ;
 		ArrayList<BaseUnit> newDen = new ArrayList<BaseUnit>() ;
@@ -216,10 +324,20 @@ public class Unit extends UnitAlias implements Cloneable {
 		return new Unit(newNum, newDen) ;
 	}
 	
+	/**
+	 * @return a unit with the denominator of this unit in the numerator, and the numerator of this unit in the denominator.
+	 */
 	public Unit invert() {
 		return new Unit(denominator, numerator) ;
 	}
 
+	/**
+	 * Multiplies this unit by another one. Combines the numerators of the two objects and the denominators of the two objects.
+	 * Order does not matter.
+	 * 
+	 * @param otherUnit the Unit to mulitply this one by
+	 * @return the resulting Unit.
+	 */
 	public Unit multiplyBy(Unit otherUnit) {
 		ArrayList<BaseUnit> newNumerator = new ArrayList<BaseUnit>(numerator) ;
 		ArrayList<BaseUnit> newDenominator = new ArrayList<BaseUnit>(denominator) ;
@@ -232,10 +350,23 @@ public class Unit extends UnitAlias implements Cloneable {
 		return newUnit ;
 	}
 
+	/**
+	 * Divides this unit by another one by multiplying it by the inverse of the otherUnit.
+	 * 
+	 * @param otherUnit the unit to divide the current unit by.
+	 * @return the resulting unit.
+	 */
 	public Unit divideBy(Unit otherUnit) {
 		return multiplyBy(otherUnit.invert()) ;
 	}
 
+	/**
+	 * Multiply this unit by itself (number) times and invert if (number) is less than 0. A (number) value of 0 will return a
+	 * dimensionless unit.
+	 * 
+	 * @param number the power to raise the unit to.
+	 * @return the resulting unit.
+	 */
 	public Unit raiseToPower(int number) {
 		if(number != 0) {
 			ArrayList<BaseUnit> newNumerator = new ArrayList<BaseUnit>(numerator) ;
@@ -244,6 +375,7 @@ public class Unit extends UnitAlias implements Cloneable {
 				newNumerator.addAll(newNumerator) ;
 				newDenominator.addAll(newDenominator) ;
 			}
+			
 			if(number > 0) {
 				return new Unit(newNumerator, newDenominator) ;
 			} else {
@@ -316,6 +448,11 @@ public class Unit extends UnitAlias implements Cloneable {
 		return "<sup>" + text + "</sup>" ;
 	}
 
+	/**
+	 * Reduces this object to a String such that a copy of this object can be obtained by Unit.valueOf().
+	 * 
+	 * @return a string representation of this object that can be read by Unit.valueOf() to return a copy of this unit.
+	 */
 	public String encode() {
 		String numeratorString = UNIT_SEPARATOR ;
 		String denominatorString = UNIT_SEPARATOR ;
@@ -334,10 +471,20 @@ public class Unit extends UnitAlias implements Cloneable {
 
 	}
 
+	/**
+	 * Identical to valueOf(String, BaseUnit[]), using BaseUnit.ALL as the list of BaseUnits to search.
+	 */
 	public static Unit valueOf(String value) {
 		return valueOf(value, BaseUnit.ALL) ;
 	}
 
+	/**
+	 * Gets a Unit object from a string generated by Unit.encode().
+	 * 
+	 * @param value string value generated by Unit.encode().
+	 * @param listOfUnits the list of BaseUnits to search when transforming each abbreviation into
+	 * @return the Unit object represented by this String, null if it cannot be decoded.
+	 */
 	public static Unit valueOf(String value, BaseUnit[] listOfUnits) {
 		String trimmed = value.trim() ;
 		String[] parts = trimmed.split(FRACTION_SEPARATOR) ;
@@ -384,6 +531,10 @@ public class Unit extends UnitAlias implements Cloneable {
 		return null ;
 	}
 	
+	/** 
+	 * @param unitType the unique prime number associated with the BaseUnit's dimension.
+	 * @return a BaseUnit of type unitType that is SI.
+	 */
 	public static BaseUnit getSIUnit(int unitType) {
 		return getSIUnit(unitType, BaseUnit.ALL) ;
 	}
