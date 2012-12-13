@@ -1,0 +1,33 @@
+#summary One-sentence summary of this page.
+
+= Using this library =
+
+Java Units is designed for use with rational units, when calculations and multiple conversions are needed. The best example of how this library can be used is the Android app [https://play.google.com/store/apps/details?id=ca.fwe.unitcalc Environmental Calculator]. The app is very similar to [http://units-in-java.sourceforge.net/ Units In Java], which was discovered after writing nearly all of this code. The main difference is that this one is simpler. It will not find your weight in eggs, but works really well for your basic multiplication, addition, and division of units in response to user input. Any combination of dimensions is assigned a unique `double` value, so finding units to convert to using the included list of units (`Units` class) is easy.
+
+= Examples =
+
+Working with `Number` objects:
+
+{{{
+Number n = new Number(4.0, Units.length.METRES) ;
+
+//multiply by 2
+Number nTimesTwo = n.multiplyBy(new Number(2)) ;
+
+//multiply by 2 inches
+Number twoInchesbyFourMetres = n.multiplyBy(new Number(2.0, Units.length.INCHES) ;
+
+//get Number in different unit
+double valueInSquareCm = twoInchesByFourMetres.getValue(Units.area.SQUARE_CENTIMETRES) ;
+
+}}}
+
+Working with `Unit` objects:
+
+{{{
+Unit u = new Unit("Metres per second sqared", "m/s/s",
+                   new BaseUnit[] {BaseUnit.METRE},
+                   new BaseUnit[] {BaseUnit.SECOND, Base Unit.SECOND} ) ;
+
+
+}}}
