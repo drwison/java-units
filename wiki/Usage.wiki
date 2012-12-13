@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Examples of usage.
 
 = Using this library =
 
@@ -41,14 +41,14 @@ Essentially a `Number` with a name attached. A `ConstantCategory` can also be at
 {{{Constant c = new Constant("Accelleration due to gravity", gravity) ;}}}
 
 ==Unit and Constant Lists==
-==Units==
+===Units===
 A list of units, organized by categories in nested classes. See examples below, or JavaDoc for full list.
 {{{
 Number n = new Number(3.1, Units.length.METRES) ;
 ArrayList<Unit> allUnits = Units.getAll() ;
 }}}
 
-==Constants==
+===Constants===
 A list of constants, organized by category.
 
 = Examples =
