@@ -12,7 +12,7 @@ public class UnitCategory {
 	
 	public UnitCategory(String typeName, Unit unit) {
 		this.name = typeName ;
-		this.unitType = unit.getDerivedUnitType() ;
+		this.unitType = unit.getUnitType() ;
 	}
 
 	public String getName() {

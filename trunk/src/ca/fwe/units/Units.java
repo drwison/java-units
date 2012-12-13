@@ -3,6 +3,12 @@ package ca.fwe.units;
 import java.util.ArrayList;
 
 
+/**
+ * @author Dewey Dunnington
+ * 
+ * A library of units, providing units plus a method of getting labels for units, as well as filtering units by type.
+ *
+ */
 public class Units {
 
 
@@ -159,9 +165,91 @@ public class Units {
 		public static final Unit[] ALL = {RADIANS_PER_SECOND, RPM} ;
 	}
 
-	public static ArrayList<Unit> ALL ;
-	public static ArrayList<UnitCategory> cat ;
+	public static class molecular_weight {
+		public static final Unit KILOGRAMS_PER_MOLE = new Unit(new BaseUnit[] {BaseUnit.KILOGRAM}, new BaseUnit[] {BaseUnit.MOLE}) ;
+		public static final Unit GRAMS_PER_MOLE = new Unit(new BaseUnit[] {BaseUnit.GRAM}, new BaseUnit[] {BaseUnit.MOLE}) ;
+		
+		public static final Unit[] ALL = {KILOGRAMS_PER_MOLE} ;
+	}
+	
+	public static class frequency {
+		public static final Unit HERTZ = new Unit("Hertz", "Hz", new BaseUnit[] {}, new BaseUnit[] {BaseUnit.SECOND}) ;
+		public static final Unit KILOHERTZ = new Unit("Kilohertz", "KHz", HERTZ, 1000) ;
+		public static final Unit MEGAHERTZ = new Unit("Megahertz", "MHz", HERTZ, 1000000) ;
+		public static final Unit GIGAHERTZ = new Unit("Gigahertz", "GHz", HERTZ, 1000000000) ;
+		
+		public static final Unit[] ALL = {HERTZ, KILOHERTZ, MEGAHERTZ, GIGAHERTZ} ;
+	}
+	
+	public static class energy {
+		public static final Unit JOULE = new Unit("Joule", "J", force.NEWTON.multiplyBy(length.METRES)) ;
+		public static final Unit KILOJOULE = new Unit("Kilojoule", "kJ", JOULE, 1000) ;
+		public static final Unit KILOWATT_HOUR = new Unit("Kilowatt-hour", "kWh", power.KILOWATT.multiplyBy(time.HOURS)) ;
+		public static final Unit ELECTRON_VOLTS = new Unit("Electron-volt", "eV", JOULE, 1.60217646e-19) ;
+		
+		public static final Unit[] ALL = {JOULE, KILOJOULE, KILOWATT_HOUR, ELECTRON_VOLTS} ;
+	}
+	
+	public static class power {
+		public static final Unit WATT = new Unit("Watt", "W", energy.JOULE.divideBy(time.SECONDS)) ;
+		public static final Unit KILOWATT = new Unit("Kilowatt", "kW", WATT, 1000) ;
+		public static final Unit MEGAWATT = new Unit("Megawatt", "MW", WATT, 1000000) ;
+		public static final Unit GIGAWATT = new Unit("Gigawatt", "GW", WATT, 1000000000) ;
+		
+		public static final Unit[] ALL = {WATT, KILOWATT, MEGAWATT, GIGAWATT} ;
+	}
+	
+	public static class potential {
+		public static final Unit VOLT = new Unit("Volt", "V", power.WATT.divideBy(current.AMPERE)) ;
+		public static final Unit KILOVOLT = new Unit("Kilovolt", "kV", VOLT, 1000) ;
+		public static final Unit MILLIVOLT = new Unit("Millivolt", "mV", VOLT, 0.001) ;
+		
+		public static final Unit[] ALL = {VOLT, KILOVOLT, MILLIVOLT} ;
+	}
+	
+	public static class current {
+		public static final Unit AMPERE = new Unit("Ampere", "A", BaseUnit.AMPERE) ;
+		public static final Unit MILLIAMP = new Unit("Milliamp", "mA", AMPERE, 0.001) ;
+		
+		public static final Unit[] ALL = {AMPERE, MILLIAMP} ;
+	}
+	
+	public static class resistance {
+		public static final Unit OHM = new Unit("Ohm", "O", potential.VOLT.divideBy(current.AMPERE)) ;
+		public static final Unit MILLIOHM = new Unit("Milliohm", "mO", OHM, 0.001) ;
+		public static final Unit KILOOHM = new Unit("Kiloohm", "kO", OHM, 1000) ;
+		
+		public static final Unit[] ALL = {OHM, MILLIOHM, KILOOHM} ;
+	}
+	
+	public static class absolute_conductivity {
+		public static final Unit SIEMENS = new Unit("Siemens", "S", new Unit().divideBy(resistance.OHM)) ;
+		public static final Unit MILLISIEMENS = new Unit("Millisiemen", "mS", SIEMENS, 0.001) ;
+		public static final Unit MICROSIEMENS = new Unit("Microsiemen", "uS", SIEMENS, 0.000001) ;
+		
+		public static final Unit[] ALL = {SIEMENS, MILLISIEMENS, MICROSIEMENS} ;
+	}
+	
+	public static class conductivity {
+		public static final Unit SIEMENS_PER_METRE = new Unit("Siemens per metre", null, absolute_conductivity.SIEMENS.divideBy(length.METRES)) ;
+		public static final Unit MICROSIEMENS_PER_CENTIMETRE = new Unit("Microsiemens per centimetre", null, absolute_conductivity.MILLISIEMENS.divideBy(length.CENTIMETRES)) ;
+		public static final Unit MILLISIEMENS_PER_CENTIMETRE = new Unit("Millisiemens per centimetre", null, absolute_conductivity.MICROSIEMENS.divideBy(length.CENTIMETRES)) ;
+		
+		public static final Unit[] ALL = {SIEMENS_PER_METRE, MICROSIEMENS_PER_CENTIMETRE, MILLISIEMENS_PER_CENTIMETRE} ;
+	}
+	
+	public static class charge {
+		public static final Unit COULOMB = new Unit("Coulomb", "C", current.AMPERE.multiplyBy(time.SECONDS)) ;
+		
+		public static final Unit[] ALL = {COULOMB} ;
+	}
+	
+	private static ArrayList<Unit> ALL ;
+	private static ArrayList<UnitCategory> cat ;
 
+	/**
+	 * @return a list of all UnitCategory objects contained in this library.
+	 */
 	public static ArrayList<UnitCategory> getCategories() {
 		if(cat == null) {
 			cat = new ArrayList<UnitCategory>() ;
@@ -180,10 +268,24 @@ public class Units {
 			cat.add(new UnitCategory("Pressure", pressure.PASCAL)) ;
 			cat.add(new UnitCategory("Angle", angle.RADIANS)) ;
 			cat.add(new UnitCategory("Angular Velocity", angular_velocity.RADIANS_PER_SECOND)) ;
+			cat.add(new UnitCategory("Molecular Weight", molecular_weight.KILOGRAMS_PER_MOLE)) ;
+			cat.add(new UnitCategory("Frequency", frequency.HERTZ)) ;
+			cat.add(new UnitCategory("Energy", energy.JOULE)) ;
+			cat.add(new UnitCategory("Power", power.WATT)) ;
+			cat.add(new UnitCategory("Potential", potential.VOLT)) ;
+			cat.add(new UnitCategory("Current", current.AMPERE)) ;
+			cat.add(new UnitCategory("Resistance", resistance.OHM)) ;
+			cat.add(new UnitCategory("Conductivity (absolute)", absolute_conductivity.SIEMENS)) ;
+			cat.add(new UnitCategory("Conductivity", conductivity.SIEMENS_PER_METRE)) ;
+			cat.add(new UnitCategory("Charge", charge.COULOMB)) ;
 		}
 		return cat ;
 	}
 
+	/**
+	 * @param type a unique double indicating unit dimensions from Unit.getUnitType() or UnitCategory.getUnitType()
+	 * @return a UnitCategory object of matching type, null if no category is found.
+	 */
 	public static UnitCategory getCategory(double type) {
 		if(cat == null)
 			getCategories() ;
@@ -194,6 +296,9 @@ public class Units {
 		return null ;
 	}
 
+	/**
+	 * @return an ArrayList of all units contained in this library.
+	 */
 	public static final ArrayList<Unit> getAll() {
 		if(ALL == null) {
 			ALL = new ArrayList<Unit>() ;
@@ -212,6 +317,17 @@ public class Units {
 			addArrayToAll(pressure.ALL) ;
 			addArrayToAll(angle.ALL) ;
 			addArrayToAll(angular_velocity.ALL) ;
+			addArrayToAll(molecular_weight.ALL) ;
+			addArrayToAll(frequency.ALL) ;
+			addArrayToAll(energy.ALL) ;
+			addArrayToAll(power.ALL) ;
+			addArrayToAll(potential.ALL) ;
+			addArrayToAll(current.ALL) ;
+			addArrayToAll(resistance.ALL) ;
+			addArrayToAll(absolute_conductivity.ALL) ;
+			addArrayToAll(conductivity.ALL) ;
+			addArrayToAll(charge.ALL) ;
+			
 		}
 		return ALL ;
 	}
@@ -222,18 +338,26 @@ public class Units {
 		}
 	}
 
+	/**
+	 * @param type a unique double indicating unit dimensions from Unit.getUnitType() or UnitCategory.getUnitType()
+	 * @return a list of comparable units, an empty list if no units are found.
+	 */
 	public static final ArrayList<Unit> filter(double type) {
 		if(ALL == null)
 			getAll() ;
 		ArrayList<Unit> out = new ArrayList<Unit>() ;
 		for(int i=0; i<ALL.size(); i++) {
-			if(ALL.get(i).getDerivedUnitType() == type)
+			if(ALL.get(i).getUnitType() == type)
 				out.add(ALL.get(i)) ;
 		}
 		return out ;
 
 	}
 
+	/**
+	 * @param unit the Unit a name is requested for.
+	 * @return a UnitAlias object containing the unit name and short form.
+	 */
 	public static final UnitAlias getAlias(Unit unit) {
 		if(ALL == null)
 			getAll() ;
