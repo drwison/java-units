@@ -7,19 +7,51 @@ Java Units is designed for use with rational units, when calculations and multip
 = Basic Classes =
 
 ==Elements==
+===BaseUnit.Dimension===
+A unique and non-derived dimension, such as length, mass, time, etc. Assigned a unique prime number from any other dimension.
+{{{
+BaseUnit.Dimension length = new BaseUnit.Dimension(BaseUnit.Dimension.LENGTH) ; 
+BaseUnit.Dimension time = new BaseUnit.Dimension(BaseUnit.Dimension.TIME) ;
+}}}
 
-=== Number ===
+===BaseUnit===
+Any unit that can be expressed only in one Dimension. This includes metres, feet, kilograms, grams, etc. Every BaseUnit is defined in terms of how many of that unit are in the SI unit of that dimension. The abbreviation of the BaseUnit is used in serializing, displaying, and decoding `String` versions of `Unit` objects.
+{{{
+BaseUnit metres = new BaseUnit("Metres", "m", length, 1.0) ;
+BaseUnit feet = new BaseUnit("Feet", "ft", length, 0.3048) ;
+BaseUnit second = new BaseUnit("Second", "s", time, 1.0) ;
+}}}
 
 === Unit ===
+An object representing a series of `BaseUnit` objects in a numerator and denominator. Units will automatically be simplified if a `BaseUnit` is in both the numerator and denominator.
+{{{
+Unit metresPerSecondSquared = new Unit(new BaseUnit[] {metres}, new BaseUnit[] {second, second}) ;
+Unit feetPerSecondSquared = new Unit(new BaseUnit[] {feet}, new BaseUnit[] {second, second}) ;
+}}}
+
+Name information can also be attached, or left `null` for automatic handling.
+{{{Unit named = new Unit("Feet per second", "ft/s", new BaseUnit[] {feet}, new BaseUnit{second}) ;}}}
+
+=== Number ===
+An object representing a value expressed in a unit.
+{{{Number gravity = new Number(-9.806, metresPerSecondSquared) ;}}}
 
 === Constant ===
+Essentially a `Number` with a name attached. A `ConstantCategory` can also be attached for organization of constants.
+{{{Constant c = new Constant("Accelleration due to gravity", gravity) ;}}}
 
 ==Unit and Constant Lists==
 ==Units==
+A list of units, organized by categories in nested classes. See examples below, or JavaDoc for full list.
+{{{
+Number n = new Number(3.1, Units.length.METRES) ;
+ArrayList<Unit> allUnits = Units.getAll() ;
+}}}
+
 ==Constants==
+A list of constants, organized by category.
 
 = Examples =
-
 Working with `Number` objects:
 
 {{{
