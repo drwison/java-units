@@ -223,7 +223,7 @@ public class BaseUnit {
 
 		private int unitType ;
 
-		private Dimension(int type) {
+		public Dimension(int type) {
 			this.unitType = type ;
 		}
 
