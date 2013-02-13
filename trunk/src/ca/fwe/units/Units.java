@@ -13,7 +13,7 @@ public class Units {
 
 
 	public static class ratio {
-		public static final Unit RATIO = new Unit("Unitless", "unitless", new BaseUnit(1)) ;
+		public static final Unit RATIO = new Unit("Unitless", null, new Unit()) ;
 		public static final Unit PI = new Unit("Pi", "pi", new BaseUnit(Math.PI)) ;
 		public static final Unit PERCENT = new Unit("Percent", "%", new BaseUnit(0.01)) ;
 		public static final Unit PARTS_PER_THOUSAND = new Unit("Parts per thousand", "ppt", new BaseUnit(0.001)) ;
@@ -170,7 +170,7 @@ public class Units {
 		public static final Unit KILOGRAMS_PER_MOLE = new Unit(new BaseUnit[] {BaseUnit.KILOGRAM}, new BaseUnit[] {BaseUnit.MOLE}) ;
 		public static final Unit GRAMS_PER_MOLE = new Unit(new BaseUnit[] {BaseUnit.GRAM}, new BaseUnit[] {BaseUnit.MOLE}) ;
 		
-		public static final Unit[] ALL = {KILOGRAMS_PER_MOLE} ;
+		public static final Unit[] ALL = {KILOGRAMS_PER_MOLE, GRAMS_PER_MOLE} ;
 	}
 	
 	public static class frequency {
