@@ -84,8 +84,9 @@ public class Units {
 		public static final Unit KILOMETRES_PER_HOUR = new Unit("Kilometres per hour", null, new BaseUnit[] {BaseUnit.KILOMETRE}, new BaseUnit[] {BaseUnit.HOUR}) ;
 		public static final Unit MILES_PER_HOUR = new Unit("Miles per hour", null, new BaseUnit[] {BaseUnit.MILE}, new BaseUnit[] {BaseUnit.HOUR}) ;
 		public static final Unit FEET_PER_SECOND = new Unit("Feet per second", null, new BaseUnit[] {BaseUnit.FOOT}, new BaseUnit[] {BaseUnit.SECOND}) ;
+		public static final Unit METRES_PER_YEAR = new Unit("Metres per year", null, new BaseUnit[] {BaseUnit.METRE}, new BaseUnit[] {BaseUnit.YEAR}) ;
 
-		public static final Unit[] ALL = {METRES_PER_SECOND, KILOMETRES_PER_HOUR, MILES_PER_HOUR, FEET_PER_SECOND} ;
+		public static final Unit[] ALL = {METRES_PER_SECOND, KILOMETRES_PER_HOUR, MILES_PER_HOUR, FEET_PER_SECOND, METRES_PER_YEAR} ;
 	}
 
 	public static class accelleration {
@@ -129,7 +130,7 @@ public class Units {
 		public static final Unit LITRES_PER_SECOND = new Unit("Litres per second", "L/s", new BaseUnit[] {BaseUnit.DECIMETRE, BaseUnit.DECIMETRE, BaseUnit.DECIMETRE}, new BaseUnit[] {BaseUnit.SECOND}) ;
 		public static final Unit LITRES_PER_DAY = new Unit("Litres per day", "L/day", new BaseUnit[] {BaseUnit.DECIMETRE, BaseUnit.DECIMETRE, BaseUnit.DECIMETRE}, new BaseUnit[] {BaseUnit.DAY}) ;
 		public static final Unit CUBIC_METRES_PER_DAY = new Unit("Cubic metres per day", null, new BaseUnit[] {BaseUnit.METRE, BaseUnit.METRE, BaseUnit.METRE}, new BaseUnit[] {BaseUnit.DAY}) ;
-		public static final Unit CUBIC_FEET_PER_DAY = new Unit("Cubic feet per second", "CFS", new BaseUnit[] {BaseUnit.FOOT, BaseUnit.FOOT, BaseUnit.FOOT}, new BaseUnit[] {BaseUnit.DAY}) ;
+		public static final Unit CUBIC_FEET_PER_DAY = new Unit("Cubic feet per day", null, new BaseUnit[] {BaseUnit.FOOT, BaseUnit.FOOT, BaseUnit.FOOT}, new BaseUnit[] {BaseUnit.DAY}) ;
 
 
 		public static final Unit[] ALL = {CUBIC_METRES_PER_SECOND, LITRES_PER_SECOND, CUBIC_FEET_PER_SECOND,
@@ -352,6 +353,17 @@ public class Units {
 		}
 		return out ;
 
+	}
+	
+	public static final ArrayList<Unit> filter(String text) {
+		if(ALL == null)
+			getAll() ;
+		ArrayList<Unit> out = new ArrayList<Unit>() ;
+		for(Unit u: ALL) {
+			if(u.toString().toLowerCase().contains(text))
+				out.add(u) ;
+		}
+		return out ;
 	}
 
 	/**
