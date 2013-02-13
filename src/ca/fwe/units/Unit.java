@@ -25,7 +25,7 @@ import java.util.Map.Entry;
  */
 public class Unit extends UnitAlias {
 
-	private static final String UNIT_SEPARATOR = "-" ;
+	private static final String UNIT_SEPARATOR = "&" ;
 	private static final String FRACTION_SEPARATOR = "/" ;
 
 	private ArrayList<BaseUnit> numerator ;
@@ -641,14 +641,15 @@ public class Unit extends UnitAlias {
 						outString += " (" + shortName + ")" ;
 					} else {
 						if(rawUnit != null)
-							outString += " (" + rawUnit + ")" ;
+							if(rawUnit.length() > 0)
+								outString += " (" + rawUnit + ")" ;
 					}
 					return outString ;
 				} else {
 					if(rawUnit != null) {
 						return rawUnit ;
 					} else {
-						return "" ;
+						return "unitless" ;
 					}
 				}
 			} else { //short name
