@@ -127,10 +127,10 @@ public class Number {
 
 	
 	/**
-	 * @return true if Math.round(getValue()) is equal to getValue(), fale otherwise.
+	 * @return true if Math.round(getValue()) is equal to getValue() (as judged by rounding to float), false otherwise.
 	 */
 	public boolean isInteger() {
-		Double value = new Double(this.getValue()) ;
+		Float value = new Float(this.getValue()) ;
 		long intValue = Math.round(value) ;
 		if(value == intValue) {
 			return true ;
@@ -243,6 +243,19 @@ public class Number {
 		return value + SEPARATOR + encodedUnit ;
 	}
 	
+	
+	public boolean equals(Object otherObject) {
+		if(otherObject instanceof Number) {
+			Number otherNumber = (Number) otherObject ;
+			if(this.getSIValue() == otherNumber.getSIValue() && this.getUnit().getUnitType() == otherNumber.getUnit().getUnitType()) {
+				return true ;
+			} else {
+				return false ;
+			}
+		} else {
+			return false ;
+		}
+	}
 	
 	
 	/**

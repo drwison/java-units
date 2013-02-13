@@ -457,6 +457,13 @@ public class Unit extends UnitAlias {
 		}
 	}
 
+	public String toString() {
+		return this.toString(true) ;
+	}
+	
+	public String toString(boolean fullText) {
+		return getUnitText(this, fullText) ;
+	}
 
 	public String getHtml() {
 		if(numerator.size() > 0 || denominator.size() > 0) {
@@ -507,7 +514,7 @@ public class Unit extends UnitAlias {
 
 			return outString ;
 		} else {
-			return null ;
+			return "" ;
 		}
 	}
 
@@ -614,4 +621,50 @@ public class Unit extends UnitAlias {
 		return null ;
 	}
 
+	public static String getUnitText(Unit value, boolean longName) {
+		if(value != null) {
+			String name = value.getName() ;
+			String shortName = value.getShortName() ;
+			String rawUnit = value.getHtml() ;
+			String outString = "" ;
+
+			UnitAlias alias = Units.getAlias(value) ;
+			if(alias != null) {
+				name = alias.getName() ;
+				shortName = alias.getShortName() ;
+			}
+
+			if(longName) {
+				if(name != null) {
+					outString = name ;
+					if(shortName != null) {
+						outString += " (" + shortName + ")" ;
+					} else {
+						if(rawUnit != null)
+							outString += " (" + rawUnit + ")" ;
+					}
+					return outString ;
+				} else {
+					if(rawUnit != null) {
+						return rawUnit ;
+					} else {
+						return "" ;
+					}
+				}
+			} else { //short name
+				if(shortName != null) {
+					return shortName ;
+				} else {
+					if(rawUnit != null) {
+						return rawUnit ;
+					} else {
+						return "" ;
+					}
+				}
+			}
+		} else {
+			return null ;
+		}
+	}
+	
 }
